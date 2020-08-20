@@ -1,6 +1,7 @@
 // CONSTANTS NEEDED TO WORK
 
 // For elements
+const carousel = document.querySelector('.carousel');
 const carouselGallery = document.querySelector('.carousel__gallery');
 const carouselImages = document.querySelectorAll('.carousel__img');
 const btnPrev = document.querySelector('.btn--prev');
@@ -19,8 +20,16 @@ const activeIndicator = 'activeIndicator';
 
 // Function that creates spans automatically
 function createIndicators(element, amount) {
-    for(i = 1; i <= amount; i++) {
-        carouselControls.innerHTML += `<${element} class="carousel__indicator"></${element}`;
+    const _indicatorClass = 'carousel__indicator';
+    for (i = 1; i <= amount; i++) {
+        carouselControls.innerHTML += `<${element} class="${_indicatorClass}"></${element}`;
+    }
+
+    if (amount > 10) {
+        document.querySelectorAll(`.${_indicatorClass}`).forEach(i => {
+            i.style.width = '1.2rem';
+            i.style.height = '1.2rem';
+        })
     }
 }
 window.onload = createIndicators('span', numberOfImages);
@@ -40,33 +49,23 @@ function currentElement(index) {
     managerClass(carouselControls.childNodes, activeIndicator, index);
 }
 
-// Events that activate the indicator function
-events.forEach(event => {
-    carouselControls.childNodes.forEach((indicator, index) => {
-        indicator.addEventListener(event, () => {
-            currentElement(index)
-        });
-    })
-})
-
 // Initial state of the carousel
 carouselImages[0].classList.add(activeClass);
 carouselControls.firstElementChild.classList.add(activeIndicator);
 
 // Function that activate carousel
 function slider(index) {
-    managerClass(carouselControls.childNodes, activeIndicator, index); 
     managerClass(carouselImages, activeClass, index);
+    managerClass(carouselControls.childNodes, activeIndicator, index);
 }
 
 // Function of the button next
 function nextImg() {
+    imageIndex++;
     if (imageIndex === numberOfImages) {
         imageIndex = 0;
     }
-
     slider(imageIndex);
-    imageIndex++;
 }
 
 // Function of the button previous
@@ -74,12 +73,16 @@ function prevImg() {
     if (imageIndex === 0) {
         imageIndex = numberOfImages;
     }
-    imageIndex--;
-    slider(imageIndex);
+    slider(--imageIndex);
 }
 
-// Events that activate the buttons functions
+// Events that activate the buttons and indicators functions
 events.forEach(event => {
     btnNext.addEventListener(event, nextImg);
     btnPrev.addEventListener(event, prevImg);
+    carouselControls.childNodes.forEach((indicator, index) => {
+        indicator.addEventListener(event, () => {
+            currentElement(index)
+        });
+    })
 })
