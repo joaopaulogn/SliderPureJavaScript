@@ -45,7 +45,7 @@ function managerClass(elements, classe, index) {
 // Function that shows the current image through the indicator
 function currentElement(index) {
     slider(index);
-
+    imageIndex = index;
     managerClass(carouselControls.childNodes, activeIndicator, index);
 }
 
